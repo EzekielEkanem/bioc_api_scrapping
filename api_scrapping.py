@@ -17,11 +17,10 @@ def call_api(query):
 
 # make_query calls the call_api function on a query, adds them to the posts dictionary, and
 # return the posts dictionary
-def make_query(posts, index):
+def add_post(posts, index):
     pre_query = "https://support.bioconductor.org/api/post/"
     # For now, I am just putting all posts into this dictionary where the keys are the post's 
     # id and the value of each key is the post, but this can change later
-    posts = posts
     """
     I'm suggesting that, to make the for loop dynamic, we could make a variable or function
     that gets the ID of the latest post and the for loop runs based on that number, so that 
@@ -41,17 +40,17 @@ def make_query(posts, index):
                 posts[parent_id].add_answer(post.get_content)
         else:
             raise Exception(f"Post does not have the parent id {parent_id} available")
-    return posts
+    return post
 
 # bulk_query takes in posts and the range of indices whose url is to be called, calls make_query on 
 # each index and returns the posts dictionary
 def bulk_query(posts, first_index, last_index):
-    posts = posts
     for i in range(first_index, last_index+1):
-        posts = make_query(posts, i)
+        add_post(posts, i)
     return posts
 
 
 
-# Call the make_query() function
-print(bulk_query({}, 1, 25))
+# Call the bulk_query() function
+posts = {}
+print(bulk_query(posts, 1, 25))
