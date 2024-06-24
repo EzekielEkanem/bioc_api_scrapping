@@ -1,8 +1,10 @@
 # Import useful libraries and packages
 import requests
 from post import Post 
-import json
-        
+from get_input_args import get_input_args
+import pickle
+import json 
+
 # function that takes in the a query, calls the query, and returns the response in a json format 
 def call_api(query):
     # Get the response
@@ -49,8 +51,21 @@ def bulk_query(posts, first_index, last_index):
         add_post(posts, i)
     return posts
 
-
-
-# Call the bulk_query() function
 posts = {}
-print(bulk_query(posts, 1, 25))
+
+# Get arguments passed from get_input_args   
+in_args = get_input_args()
+if in_args.single_index:
+    add_post(posts, in_args.single_index)
+elif in_args.double_index:
+    bulk_query(posts, in_args.double_index[0], in_args.double_index[1])
+else:
+    raise Exception(f"No argument has been passed. You must set either a single index or a double \
+                    index in the command line")
+
+def dump_to_file(filepath, object):
+    with open(filepath, "wb") as f:
+        pickle.dump(object, f)
+    return filepath 
+
+dump_to_file("./post_file.pkl", posts)

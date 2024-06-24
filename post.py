@@ -5,6 +5,7 @@ class Post:
         self._vote_count = post_json["vote_count"]
         self._type = post_json["type"]
         self._parent_id = post_json["parent_id"]
+        self._author_uid = post_json["author_uid"]
         self._comments = []
         self._answers = []
     """
@@ -42,6 +43,12 @@ class Post:
 
     def set_parent_id(self, new_parent_id):
         self._parent_id = new_parent_id
+
+    def get_author_uid(self):
+        return self._author_uid
+
+    def set_author_uid(self, new_author_uid):
+        self._author_uid = new_author_uid
 
     def get_comments(self):
         return self._comments
