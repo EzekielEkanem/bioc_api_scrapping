@@ -24,7 +24,10 @@ def call_api(query, num_of_retries=3, wait_len=5):
             print(f"The request wasn't successful: {e}") 
             retries += 1
             print(f"Sleeping for {wait_len} seconds")
-            time.sleep(wait_len) if retries <= num_of_retries else time.sleep(0)
+            if retries <= num_of_retries:
+                time.sleep(wait_len)  
+            else:
+                raise Exception(f"Number of trials exceeded for call_api ({num_of_retries}). Request still unsuccessful")
 
 # make_query calls the call_api function on a query, adds them to the posts dictionary, and
 # return the posts dictionary
@@ -78,14 +81,14 @@ def dump_to_file(filepath, object):
         pickle.dump(object, f)
     return filepath 
 
-# Call the dump_to_file function
-dump_to_file(in_args.dump_file, posts)
-
 # Load data from filepath
 def load_file(filepath):
     with open(filepath, "rb") as f:
         posts = pickle.load(f)
     return posts 
 
-# Call the load_file function
-print(load_file(in_args.load_file))
+# dump and load files if a filepath is given
+if in_args.dump_file:
+    dump_to_file(in_args.dump_file, posts)
+if in_args.load_file:
+    load_file(in_args.load_file)
