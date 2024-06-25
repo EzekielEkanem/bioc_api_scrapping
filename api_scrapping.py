@@ -3,19 +3,28 @@ import requests
 from post import Post 
 from get_input_args import get_input_args
 import pickle
+import time
 import json 
 
 # function that takes in the a query, calls the query, and returns the response in a json format 
-def call_api(query):
-    # Get the response
-    response = requests.get(query)
+def call_api(query, num_of_retries=3, wait_len=5):
+    retries = 0
+    while retries <= num_of_retries:
+        try: 
+            # Get the response
+            response = requests.get(query)
 
-    # returns the value of the request in a json format if response is successful
-    if response:
-        response_dict = response.json()
-        return response_dict
-    else: 
-        raise Exception(f"The request wasn't successful: {response.status_code}")
+            # raises an error if there is one
+            response.raise_for_status()
+
+            # returns the value of the request in a json format if response is successful
+            response_dict = response.json()
+            return response_dict
+        except requests.exceptions as e:
+            print(f"The request wasn't successful: {e}") 
+            retries += 1
+            print(f"Sleeping for {wait_len} seconds")
+            time.sleep(wait_len) if retries <= num_of_retries else time.sleep(0)
 
 # make_query calls the call_api function on a query, adds them to the posts dictionary, and
 # return the posts dictionary
@@ -63,9 +72,20 @@ else:
     raise Exception(f"No argument has been passed. You must set either a single index or a double \
                     index in the command line")
 
+# Serialize data to filepath
 def dump_to_file(filepath, object):
     with open(filepath, "wb") as f:
         pickle.dump(object, f)
     return filepath 
 
-dump_to_file("./post_file.pkl", posts)
+# Call the dump_to_file function
+dump_to_file(in_args.dump_file, posts)
+
+# Load data from filepath
+def load_file(filepath):
+    with open(filepath, "rb") as f:
+        posts = pickle.load(f)
+    return posts 
+
+# Call the load_file function
+print(load_file(in_args.load_file))
