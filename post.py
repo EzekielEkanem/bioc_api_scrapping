@@ -79,3 +79,15 @@ class Post:
             return self._answers[index]
         else:
             raise IndexError("Index out of range")
+        
+    def to_dict(self):
+        return {
+            "id": self._id,
+            "content": self._content,
+            "vote_count": self._vote_count,
+            "type": self._type,
+            "parent_id": self._parent_id,
+            "author_uid": self._author_uid,
+            "comments": [comment.to_dict() if isinstance(comment, Post) else comment for comment in self._comments],
+            "answers": [answer.to_dict() if isinstance(answer, Post) else answer for answer in self._answers]
+        }

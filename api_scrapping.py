@@ -64,9 +64,9 @@ def add_post(posts, index):
         parent_id = post.get_parent_id()
         if parent_id in posts:
             if post.get_type() == "Comment":
-                posts[parent_id].add_comment(post.get_content)  
+                posts[parent_id].add_comment(post)  
             else:
-                posts[parent_id].add_answer(post.get_content)
+                posts[parent_id].add_answer(post)
         else:
             raise Exception(f"Post does not have the parent id {parent_id} available")
     return post
