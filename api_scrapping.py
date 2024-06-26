@@ -4,7 +4,22 @@ from post import Post
 from get_input_args import get_input_args
 import pickle
 import time
-import json 
+import json
+
+posts = {}
+
+# Load data from filepath
+def load_file(filepath):
+    with open(filepath, "rb") as f:
+        posts = pickle.load(f)
+    return posts
+
+# Get arguments passed from get_input_args
+in_args = get_input_args()
+if in_args.load_file:
+    posts = load_file(in_args.load_file)
+
+print(posts)
 
 # function that takes in the a query, calls the query, and returns the response in a json format 
 def call_api(query, num_of_retries=3, wait_len=5):
@@ -63,10 +78,7 @@ def bulk_query(posts, first_index, last_index):
         add_post(posts, i)
     return posts
 
-posts = {}
-
 # Get arguments passed from get_input_args   
-in_args = get_input_args()
 if in_args.single_index:
     add_post(posts, in_args.single_index)
 elif in_args.double_index:
@@ -79,16 +91,8 @@ else:
 def dump_to_file(filepath, object):
     with open(filepath, "wb") as f:
         pickle.dump(object, f)
-    return filepath 
-
-# Load data from filepath
-def load_file(filepath):
-    with open(filepath, "rb") as f:
-        posts = pickle.load(f)
-    return posts 
+    return filepath  
 
 # dump and load files if a filepath is given
 if in_args.dump_file:
     dump_to_file(in_args.dump_file, posts)
-if in_args.load_file:
-    load_file(in_args.load_file)
