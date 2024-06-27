@@ -8,11 +8,6 @@ class Post:
         self._author_uid = post_json["author_uid"]
         self._comments = []
         self._answers = []
-    """
-    I think getter and setter methods are more widely known in other programming
-    languages, so I decided to use that instead of @property methods. I can change 
-    to using property methods if that is better
-    """
     
     def get_id(self):
         return self._id
