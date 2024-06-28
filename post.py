@@ -1,55 +1,29 @@
 class Post:
     def __init__(self, post_json):
-        self._id = post_json["id"]
-        self._content = post_json["content"]
-        self._vote_count = post_json["vote_count"]
-        self._type = post_json["type"]
-        self._parent_id = post_json["parent_id"]
-        self._author_uid = post_json["author_uid"]
+        self._raw_json = post_json
         self._comments = []
         self._answers = []
     
     def get_id(self):
-        return self._id
-
-    def set_id(self, new_id):
-        self._id = new_id
+        return self._raw_json.get("id")
 
     def get_content(self):
-        return self._content
-
-    def set_content(self, new_content):
-        self._content = new_content
+        return self._raw_json.get("content")
 
     def get_vote_count(self):
-        return self._vote_count
-
-    def set_vote_count(self, new_vote_count):
-        self._vote_count = new_vote_count
+        return self._raw_json.get("vote_count")
 
     def get_type(self):
-        return self._type
-
-    def set_type(self, new_type):
-        self._type = new_type
+        return self._raw_json.get("type")
 
     def get_parent_id(self):
-        return self._parent_id
-
-    def set_parent_id(self, new_parent_id):
-        self._parent_id = new_parent_id
+        return self._raw_json.get("parent_id")
 
     def get_author_uid(self):
-        return self._author_uid
-
-    def set_author_uid(self, new_author_uid):
-        self._author_uid = new_author_uid
+        return self._raw_json.get("author_id")
 
     def get_comments(self):
         return self._comments
-
-    def set_comments(self, new_comments):
-        self._comments = new_comments
 
     def add_comment(self, comment):
         self._comments.append(comment)
@@ -63,9 +37,6 @@ class Post:
     def get_answers(self):
         return self._answers
 
-    def set_answers(self, new_answers):
-        self._answers = new_answers
-
     def add_answer(self, answer):
         self._answers.append(answer)
 
@@ -77,12 +48,7 @@ class Post:
         
     def to_dict(self):
         return {
-            "id": self._id,
-            "content": self._content,
-            "vote_count": self._vote_count,
-            "type": self._type,
-            "parent_id": self._parent_id,
-            "author_uid": self._author_uid,
+            "raw_json": self._raw_json,
             "comments": [comment.to_dict() if isinstance(comment, Post) else comment for comment in self._comments],
             "answers": [answer.to_dict() if isinstance(answer, Post) else answer for answer in self._answers]
         }

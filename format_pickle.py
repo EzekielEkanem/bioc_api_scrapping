@@ -29,6 +29,6 @@ class PostEncoder(json.JSONEncoder):
 # dump posts in json format
 def serialize_posts(posts, filename):
     with open(filename, "w") as f:
-        json.dump(posts, f, cls=PostEncoder)
+        json.dump(posts, f, cls=PostEncoder, indent=4)
 
 serialize_posts(qs_posts, in_args.dump_file)
