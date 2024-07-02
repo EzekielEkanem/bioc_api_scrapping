@@ -6,12 +6,18 @@ class Post:
     
     def get_id(self):
         return self._raw_json.get("id")
+    
+    def get_uid(self):
+        return self._raw_json.get("uid")
 
     def get_content(self):
         return self._raw_json.get("content")
 
     def get_vote_count(self):
         return self._raw_json.get("vote_count")
+    
+    def get_thread_score(self):
+        return self._raw_json.get("thread_score")
 
     def get_type(self):
         return self._raw_json.get("type")
@@ -49,6 +55,17 @@ class Post:
     def to_dict(self):
         return {
             "raw_json": self._raw_json,
+            "comments": [comment.to_dict() if isinstance(comment, Post) else comment for comment in self._comments],
+            "answers": [answer.to_dict() if isinstance(answer, Post) else answer for answer in self._answers]
+        }
+    
+    def to_summary_dict(self):
+        return {
+            "uid": self.get_uid(),
+            "content": self.get_content(),
+            "thread_score": self.get_thread_score(),
+            "vote_count": self.get_vote_count(),
+            "type": self.get_type(),
             "comments": [comment.to_dict() if isinstance(comment, Post) else comment for comment in self._comments],
             "answers": [answer.to_dict() if isinstance(answer, Post) else answer for answer in self._answers]
         }

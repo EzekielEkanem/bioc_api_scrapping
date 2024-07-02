@@ -4,14 +4,20 @@ from post import Post
 from get_input_args import get_input_args
 import pickle
 import time
+import json
 from tqdm import tqdm
 
 posts = {}
 
 # Load data from filepath
 def load_file(filepath):
-    with open(filepath, "rb") as f:
-        posts = pickle.load(f)
+    # Check if the file is a pickle file
+    if ".pkl" in filepath:
+        with open(filepath, "rb") as f:
+            posts = pickle.load(f)
+    else:
+        with open(filepath, "r") as f:
+            posts = json.load(f)
     return posts
 
 # Get arguments passed from get_input_args
@@ -33,14 +39,16 @@ def call_api(query, num_of_retries=3, wait_len=5):
             # returns the value of the request in a json format if response is successful
             response_dict = response.json()
             return response_dict
-        except requests.exceptions as e:
+        # catch exception error and return None if unsuccessful after three tries
+        except requests.exceptions.RequestException as e:
             print(f"The request wasn't successful: {e}") 
             retries += 1
             print(f"Sleeping for {wait_len} seconds")
             if retries <= num_of_retries:
                 time.sleep(wait_len)  
             else:
-                raise Exception(f"Number of trials exceeded for call_api ({num_of_retries}). Request still unsuccessful")
+                print(f"Number of trials exceeded for call_api ({num_of_retries}). Request still unsuccessful")
+    return None
 
 # make_query calls the call_api function on a query, adds them to the posts dictionary, and
 # return the posts dictionary
@@ -50,18 +58,21 @@ def add_post(posts, index):
     # if a post is a comment or an answer, add the content of that post to the parent_id of the post
     query = pre_query + f"{index}/"
     query_response = call_api(query)
-    post = Post(query_response)        
-    posts[post.get_id()] = post
-    if post.get_type() != "Question":
-        parent_id = post.get_parent_id()
-        if parent_id in posts:
-            if post.get_type() == "Comment":
-                posts[parent_id].add_comment(post)  
+    # Check if call_api returned a json response or None
+    if query_response != None:
+        post = Post(query_response)        
+        posts[post.get_id()] = post
+        if post.get_type() != "Question":
+            parent_id = post.get_parent_id()
+            if parent_id in posts:
+                if post.get_type() == "Comment":
+                    posts[parent_id].add_comment(post)  
+                else:
+                    posts[parent_id].add_answer(post)
             else:
-                posts[parent_id].add_answer(post)
-        else:
-            raise Exception(f"Post does not have the parent id {parent_id} available")
-    return post
+                raise Exception(f"Post does not have the parent id {parent_id} available")
+        return post
+    return {}
 
 # bulk_query takes in posts and the range of indices whose url is to be called, calls make_query on 
 # each index and returns the posts dictionary
@@ -76,8 +87,8 @@ def bulk_query(posts, first_index, last_index):
         add_post(posts, i)
     return posts
 
-# Get arguments passed from get_input_args   
-if in_args.single_index:
+# Get arguments passed from get_input_args  
+if in_args.single_index != None:
     add_post(posts, in_args.single_index)
 elif in_args.double_index:
     bulk_query(posts, in_args.double_index[0], in_args.double_index[1])
