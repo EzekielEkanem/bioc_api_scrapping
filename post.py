@@ -1,8 +1,8 @@
 class Post:
-    def __init__(self, post_json):
+    def __init__(self, post_json, answers=[], comments=[]):
         self._raw_json = post_json
-        self._comments = []
-        self._answers = []
+        self._comments = comments
+        self._answers = answers
     
     def get_id(self):
         return self._raw_json.get("id")
@@ -61,11 +61,12 @@ class Post:
     
     def to_summary_dict(self):
         return {
+            "id": self.get_id(),
             "uid": self.get_uid(),
             "content": self.get_content(),
             "thread_score": self.get_thread_score(),
             "vote_count": self.get_vote_count(),
             "type": self.get_type(),
-            "comments": [comment.to_dict() if isinstance(comment, Post) else comment for comment in self._comments],
-            "answers": [answer.to_dict() if isinstance(answer, Post) else answer for answer in self._answers]
+            "comments": [comment.to_summary_dict() if isinstance(comment, Post) else comment for comment in self._comments],
+            "answers": [answer.to_summary_dict() if isinstance(answer, Post) else answer for answer in self._answers]
         }

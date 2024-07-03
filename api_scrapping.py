@@ -58,7 +58,7 @@ def add_post(posts, index):
     # if a post is a comment or an answer, add the content of that post to the parent_id of the post
     query = pre_query + f"{index}/"
     query_response = call_api(query)
-    # Check if call_api returned a json response or None
+    # Check if call_api returned a json response or if it returned None
     if query_response != None:
         post = Post(query_response)        
         posts[post.get_id()] = post

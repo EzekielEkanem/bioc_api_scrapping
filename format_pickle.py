@@ -2,6 +2,7 @@ import json
 import pickle
 from post import Post
 from get_input_args import get_input_args
+import types
 
 posts = {}
 
@@ -24,7 +25,7 @@ if in_args.load_file:
 qs_posts = [p for k, p in posts.items() if p.get_type() == "Question"]
 
 # Only filter out all the questions that have a thread score of 10 and above
-qs_posts = [p for k, p in posts.items() if p.get_thread_score() >= 10]
+# qs_posts = [p for k, p in posts.items() if p.get_thread_score() >= 10]
 
 # Sort the list in order of top vote_count
 qs_posts = sorted(qs_posts, key=lambda post: post.get_thread_score(), reverse=True)
