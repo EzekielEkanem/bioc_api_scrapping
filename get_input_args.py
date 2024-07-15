@@ -8,7 +8,7 @@ def get_input_args():
     parser.add_argument("--single_index", type=int, help="Set an id number whose post is to be requested")
     parser.add_argument("--double_index", type=int, nargs=2, help="Set two id numbers corresponding \
                         to the range of posts to be requested. For example, if requesting for the posts \
-                         between index numbers 1 and 25, input 1 25")
+                         from index numbers 1 to 25, input 1 25")
     parser.add_argument("--load_file", type=str, default="", required=False, help="Set the filepath from \
                         which 'posts' is to be loaded from")
     parser.add_argument("--dump_file", type=str, default="", required=False, help="Set the filepath to \
